@@ -12,12 +12,20 @@ function surface(req::HTTP.Request)
         return HTTP.Response(200, headers)
     end
 
-    return HTTP.Response(200, headers; body = JSON.json(rand(2)))
+    uri = HTTP.URIs.splitpath(req.target)
+    if length(uri) != 5
+        return HTTP.Response(400, headers)
+    end
+
+    (offset, step, stop) = parse.(Float64, uri[3:5])
+    r = offset:step:stop
+
+    return HTTP.Response(200, headers; body=JSON.json(surface(r, σ=1, μ=0)))
 end
 
 HTTP.@register(ROUTER, "GET", "/api/surface", surface)
 
 function Base.run()
-    @info "service started at http://127.0.0.1:8080/api/surface"
-    HTTP.serve(SERVER, Sockets.localhost, 8080)
+    @info "service started at http://127.0.0.1:8080/api/surface/-10/0.1/10"
+    HTTP.serve(ROUTER, "127.0.0.1", 8080)
 end
