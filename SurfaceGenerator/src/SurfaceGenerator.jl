@@ -1,5 +1,6 @@
 module SurfaceGenerator
 
-# Write your package code here.
+    include("generator.jl")
+    include("api.jl")
 
 end
