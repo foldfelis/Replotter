@@ -20,7 +20,7 @@ function surface(req::HTTP.Request)
     (offset, step, stop) = parse.(Float64, uri[3:5])
     r = offset:step:stop
 
-    return HTTP.Response(200, headers; body=JSON.json(surface(r, σ=1, μ=0)))
+    return HTTP.Response(200, headers; body=JSON.json([r, surface(r, σ=1, μ=0)]))
 end
 
 HTTP.@register(ROUTER, "GET", "/api/surface", surface)
